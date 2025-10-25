@@ -23,12 +23,13 @@ export default async function UserLayout({ children }: { children: React.ReactNo
                         <li className=""><Link href="/user/exhibitions" className="hover:text-violet-600 hover:underline">Exhibitions</Link></li>
                         <li className=""><Link href="/user/artists" className="hover:text-violet-600 hover:underline">Artists</Link></li>
                         <li className=""><Link href="/user/art-pieces" className="hover:text-violet-600 hover:underline">Pieces</Link></li>
+                        <li className=""><Link href="/user/reports" className="hover:text-violet-600 hover:underline">Reports</Link></li>
                     </ul>
             )} {(isAuthenticated && isClerk) && (
                 <ul className="flex-wrap flex-row justify-center list-none text-black p-4 m-4 space-y-4 no-underline">
                     <li className=""><Link href="/auth/login" className="hover:text-violet-600 hover:underline">Logout</Link></li>
-                    <li className=""><Link href="/user/exhibitions" className="hover:text-violet-600 hover:underline">Bookings</Link></li>
-                    <li className=""><Link href="/user/check-in" className="hover:text-violet-600 hover:underline">Check In</Link></li>
+                    <li className=""><Link href="/user/set-up" className="hover:text-violet-600 hover:underline">Set Up Artists</Link></li>
+                    <li className=""><Link href="/user/check-in" className="hover:text-violet-600 hover:underline">Bookings</Link></li>
                 </ul>
             )}
             <div className="flex-col">

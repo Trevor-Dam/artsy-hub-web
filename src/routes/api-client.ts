@@ -2,7 +2,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 const apiClient = axios.create({
-  baseURL: "http://127.0.0.1:32768/api"
+  baseURL: "http://127.0.0.1:5074/api"
 });
 
 export default apiClient;

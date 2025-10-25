@@ -1,6 +1,6 @@
 "use server";
 
-import { postFormData } from "@/routes/api-client";
+import { fetchData, postFormData } from "@/routes/api-client";
 import axios from "axios";
 import { readFileSync } from "fs";
 import { writeFile } from "fs/promises";
@@ -52,24 +52,10 @@ Promise<any> {
         Gender: gender
     };
     try {
-        const response = await fetch(`${api}/Artists`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(artistData),
-            
-        });
-        if ((response.ok) || (response.status  === 201)) {
-            const data = await response.json();
-            console.log("Artist added successfully", data);
+        const response = await postData(`/Artists`, artistData, token);
+        
+            console.log("Artist added successfully", response);
             initState = {successMessage:"Artist added successfully", errorMessage: ''};
-        }
-        else {
-            console.error("Error adding artist:", response.statusText);
-            initState = {successMessage: '', errorMessage: response.statusText || "Error adding artist"};
-        }
     } catch (error) {
         console.error("Error adding artist:", error);
         initState = {successMessage: '', errorMessage: "Error adding artist"};
@@ -116,7 +102,18 @@ Promise<any> {
     if (!token) {
         return { initState: {successMessage: '', errorMessage: "User not authenticated"} };
     }
-    let exhibitionResponse;
+    let exhibitionData;
+    let artPieceData: {
+            id: number,
+            name: string,
+            description: string,
+            artistId: number,
+            type: string,
+            artistName: string,
+            artistSurname: string,
+            value: string,
+            arturl: string
+            }[];
     const ExhibitionData = {
         Name: data.get('name'),
         StartDateTime: data.get('startDate'),
@@ -125,17 +122,24 @@ Promise<any> {
         Category: data.get('category')
     }
     try {
-        exhibitionResponse = await postData('/Exhibitions', ExhibitionData, token);
-        console.log("Exhibition added successfully", exhibitionResponse);
+        exhibitionData = await postData('/Exibitions', ExhibitionData, token);
+        console.log("Exhibition added successfully", exhibitionData);
     } catch (error) {
         console.error("Error adding exhibition:", error);
         return { initState: {successMessage: '', errorMessage: error || "Error adding exhibition"} };
     }
     const displayDataArray = [];
-    for (const pair of  data.getAll('artPieces')) {
+    try {
+        artPieceData = await fetchData(`/ArtPieces/${exhibitionData.category}`, token);
+        console.log("Art pieces fetched successfully", artPieceData);
+    } catch (error) {
+        console.error("Error fetching art pieces:", error);
+        return { initState: {successMessage: '', errorMessage: error || "Error fetching art pieces"} };
+    }
+    for (const pair of artPieceData) {
         const displayData = {
-            ExhibitionId: exhibitionResponse.id,
-            ArtPieceId: Number(pair),
+            ExibitionId: exhibitionData.id,
+            ArtPieceId: Number(pair.id),
             Status: 'Available',
             IsSetup: false,
             IsRemoved: false
